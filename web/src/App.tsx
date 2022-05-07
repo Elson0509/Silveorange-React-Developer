@@ -1,16 +1,18 @@
-import React, { useEffect } from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Card } from 'react-bootstrap';
 
-import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export function App() {
+  const [repos, setRepos] = useState<any[]>([]);
+
   useEffect(() => {
     axios
       .get('http://localhost:4000/repos')
       .then((res) => {
         console.log(res.data);
+        setRepos(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -18,21 +20,21 @@ export function App() {
   }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main className="container-fluid">
+      <div className="row">
+        {repos.map((repo) => (
+          <Card key={repo.id} bg="light">
+            <Card.Body>
+              <Card.Title>{repo.name}</Card.Title>
+              <Card.Subtitle className="mb-2 text-muted">
+                Language: {repo.language}
+              </Card.Subtitle>
+              <Card.Text>Description: {repo.description}</Card.Text>
+              <Card.Text>Forks count: {repo.forks_count}</Card.Text>
+            </Card.Body>
+          </Card>
+        ))}
+      </div>
+    </main>
   );
 }
