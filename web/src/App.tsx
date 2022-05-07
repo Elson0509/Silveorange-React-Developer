@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Card, Button } from 'react-bootstrap';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ReactMarkdown from 'react-markdown';
 
 export function App() {
   const [repos, setRepos] = useState<any[]>([]);
@@ -51,7 +52,20 @@ export function App() {
   };
 
   const clickRepoHandler = (repoName: string) => {
-    console.log(repoName);
+    axios
+      .get(`https://raw.githubusercontent.com/${repoName}/master/README.md`)
+      .then((res) => {
+        console.log(res.data);
+        const reposCopy = [...filteredrepos];
+        const newRepos = reposCopy.map((repo: any) => {
+          if (repo.full_name === repoName) {
+            repo.markdown = res.data;
+          }
+          return repo;
+        });
+        console.log({ newRepos });
+        setFilteredRepos(newRepos);
+      });
   };
 
   return (
@@ -68,6 +82,13 @@ export function App() {
               {language}
             </Button>
           ))}
+          <Button
+            variant="danger"
+            className="mx-2"
+            onClick={() => filterReposByLanguage('')}
+          >
+            Original list
+          </Button>
         </div>
       </div>
       <div className="row">
@@ -75,7 +96,7 @@ export function App() {
           <Card
             key={repo.id}
             bg="light"
-            onClick={() => clickRepoHandler(repo.name)}
+            onClick={() => clickRepoHandler(repo.full_name)}
             className="pointer card-repo"
           >
             <Card.Body>
@@ -85,6 +106,12 @@ export function App() {
               </Card.Subtitle>
               <Card.Text>Description: {repo.description}</Card.Text>
               <Card.Text>Forks count: {repo.forks_count}</Card.Text>
+              {repo.markdown ? (
+                <div>
+                  <hr />
+                  <ReactMarkdown>{repo.markdown}</ReactMarkdown>
+                </div>
+              ) : null}
             </Card.Body>
           </Card>
         ))}
