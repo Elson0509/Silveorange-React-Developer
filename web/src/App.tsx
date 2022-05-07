@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, Button } from 'react-bootstrap';
-
+import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export function App() {
@@ -50,6 +50,10 @@ export function App() {
     }
   };
 
+  const clickRepoHandler = (repoName: string) => {
+    console.log(repoName);
+  };
+
   return (
     <main className="container-fluid">
       <div className="row">
@@ -68,7 +72,12 @@ export function App() {
       </div>
       <div className="row">
         {filteredrepos.map((repo) => (
-          <Card key={repo.id} bg="light">
+          <Card
+            key={repo.id}
+            bg="light"
+            onClick={() => clickRepoHandler(repo.name)}
+            className="pointer card-repo"
+          >
             <Card.Body>
               <Card.Title>{repo.name}</Card.Title>
               <Card.Subtitle className="mb-2 text-muted">
