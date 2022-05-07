@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
+import axios from 'axios';
 
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export function App() {
+  useEffect(() => {
+    axios
+      .get('http://localhost:4000/repos')
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">

@@ -23,14 +23,22 @@ repos.get('/', async (_: Request, res: Response) => {
 
     const url = 'https://api.github.com/users/silverorange/repos';
 
-    axios.get(url).then((response) => {
-      const urlData = response.data;
+    axios
+      .get(url)
+      .then((response) => {
+        const urlData = response.data;
 
-      const fullData = jsonData.concat(urlData);
+        const fullData = jsonData.concat(urlData);
 
-      const falseRepos = fullData.filter((el: Repo) => !el.fork);
+        const falseRepos = fullData.filter((el: Repo) => !el.fork);
 
-      return res.json(falseRepos);
-    });
+        return res.json(falseRepos);
+      })
+      .catch((error) => {
+        res.status(500).json({
+          status: 500,
+          message: 'Internal Server Error',
+        });
+      });
   });
 });
